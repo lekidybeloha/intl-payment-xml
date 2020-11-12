@@ -14,7 +14,10 @@
     },
     "autoload": {
         "psr-4": {
-            "TransferFile\\": "src/TransferFile/"
+            "TransferFile\\": "src/TransferFile/",
+            "DataStructure\\": "src/DataStructure/",
+            "DomBuilder\\": "src/DomBuilder/",
+            "Utils\\": "src/Utils/"
         }
     }
 }
