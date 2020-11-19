@@ -1,6 +1,6 @@
 **This is a library to generate XML file for international transaction.**
 
-#Usage example :
+# Usage example
 
 ```php 
 use TransferFile\TransferFileCredit;
@@ -10,15 +10,20 @@ $test->createTransaction(200, 'USXXXXXXXXXXXXXXXXXXX', 'PPBPBP', ' USA Factory',
 echo $test->build();
 ```
 
-#Explication
+# Explication
 
-`TransferFileCredit::createCustomerTransfer(identificationMessage, Society Name, "pain.001.001.03")`
-<br>
+```php
+TransferFileCredit::createCustomerTransfer(identificationMessage, Society Name, "pain.001.001.03")
+```
+
 This code will initiate the basic information for transaction
-`addPaymentInfo(payementReference, Society Name, IBAN, BIC)`<br>
-
+```php
+addPaymentInfo(payementReference, Society Name, IBAN, BIC)
+```
 This code  will create the debitor account
 
-`createTransaction(amount, IBAN, BIC, Beneficiary Society Name, Remittance information, Payment ID)`
+```php
+createTransaction(amount, IBAN, BIC, Beneficiary Society Name, Remittance information, Payment ID)
+```
 
 This code will create de credit bank transfert to the beneficiary
