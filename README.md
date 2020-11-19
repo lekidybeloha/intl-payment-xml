@@ -1,6 +1,6 @@
 **This is a library to generate XML file for international transaction.**
 
-#Usage example
+# Usage example
 
 ```php 
 use TransferFile\TransferFileCredit;
@@ -10,7 +10,7 @@ $test->createTransaction(200, 'USXXXXXXXXXXXXXXXXXXX', 'PPBPBP', ' USA Factory',
 echo $test->build();
 ```
 
-#Explication
+# Explication
 
 `TransferFileCredit::createCustomerTransfer(identificationMessage, Society Name, "pain.001.001.03")`
 
