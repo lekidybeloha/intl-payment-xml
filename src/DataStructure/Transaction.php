@@ -46,15 +46,17 @@ class Transaction
         $creditorAccount->appendChild($id);
         $CdtTrfTxInf->appendChild($creditorAccount);
         //Purp
+        /*
         $purp                   = $document->createElement('Purp');
         $purp->appendChild($document->createElement('Cd', "SCVE"));
         $CdtTrfTxInf->appendChild($purp);
         //RgltryRptg
+
         $regist                 = $document->createElement('RgltryRptg');
         $reg                    = $document->createElement('Dtls');
         $reg->appendChild($document->createElement('Cd', '150'));
         $regist->appendChild($reg);
-        $CdtTrfTxInf->appendChild($regist);
+        $CdtTrfTxInf->appendChild($regist);*/
         //Remittance
         $remittanceInformation  = $document->createElement('RmtInf');
         $remittanceInformation->appendChild($document->createElement('Ustrd', StringHelpers::sanitizeString($payment['reason'])));
