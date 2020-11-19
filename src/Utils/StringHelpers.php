@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright (c) 19/11/2020 16:27 DIMBINIAINA Elkana Vinet
+ * XML international transaction
+ */
 
 namespace Utils;
 

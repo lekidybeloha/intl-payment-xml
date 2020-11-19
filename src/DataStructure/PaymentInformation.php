@@ -1,22 +1,35 @@
 <?php
-
+/**
+ * Copyright (c) 19/11/2020 16:26 DIMBINIAINA Elkana Vinet
+ * XML international transaction
+ */
 
 namespace DataStructure;
 
 
 use DomBuilder\BaseBuilder;
+use Utils\StringHelpers;
 
 class PaymentInformation
 {
+    protected $MSGID;
+    protected $initiator;
     protected $ref;
     protected $debtorName;
     protected $debtorIBAN;
     protected $debtorBIC;
     protected $dateTime;
     protected $transactionNumber    = 0;
+    protected $transactionRef;
     protected $controlPrice         = 0;
     protected $payments             = [];
     protected $currentPayment;
+
+    public function __construct($MSGID, $initiator)
+    {
+        $this->MSGID        = $MSGID;
+        $this->initiator    = $initiator;
+    }
 
     public function addPaymentInfo($ref, $debtorName, $debtorIBAN, $debtorBIC)
     {
@@ -25,17 +38,17 @@ class PaymentInformation
         $this->debtorIBAN   = $debtorIBAN;
         $this->debtorBIC    = $debtorBIC;
         $this->dateTime     = new \DateTime();
-        //Header::build($this->ref, $this->debtorName, $this->debtorIBAN, $this->debtorBIC);
     }
 
-    public function createTransaction(float $amount, $creditorIBAN, $creditorBIC, $creditorName, $reason)
+    public function createTransaction(float $amount, $creditorIBAN, $creditorBIC, $creditorName, $reason, $ref)
     {
-        $this->payments[$reason] = [
+        $this->payments[] = [
                                         'amount'    =>  $amount,
                                         'iban'      =>  $creditorIBAN,
                                         'bic'       =>  $creditorBIC,
                                         'name'      =>  $creditorName,
                                         'reason'    =>  $reason,
+                                        'ref'       =>  $ref
                                 ];
         $this->transactionNumber++;
         $this->controlPrice += $amount;
@@ -45,78 +58,65 @@ class PaymentInformation
     {
         $builder                = new BaseBuilder("pain.001.001.03");
         $entete                 = $builder->doc->createElement('CstmrCdtTrfInitn');
+        $this->traitment($builder->doc, $entete);
         $builder->root->appendChild($entete);
 
+        return $builder->asXml();
+    }
+
+    protected function traitment($document, $root)
+    {
         //Build header
-        $groupHeaderTag         = $builder->doc->createElement('GrpHdr');
-        $messageId              = $builder->doc->createElement('MsgId', $this->ref);
-        $groupHeaderTag->appendChild($messageId);
-        $creationDateTime       = $builder->doc->createElement(
-                                                        'CreDtTm',
-                                                        "test"
-                                                    );
-        $groupHeaderTag->appendChild($creationDateTime);
-        $groupHeaderTag->appendChild($builder->doc->createElement('NbOfTxs', $this->transactionNumber));
-        $groupHeaderTag->appendChild(
-            $builder->doc->createElement('CtrlSum', $this->controlPrice)
-        );
-
-        $initiatingParty        = $builder->doc->createElement('InitgPty');
-        $initiatingPartyName    = $builder->doc->createElement('Nm', $this->debtorName);
-        $initiatingParty->appendChild($initiatingPartyName);
-        if ($this->ref !== null) {
-            $id = $builder->doc->createElement('Id', $this->ref);
-            $initiatingParty->appendChild($id);
+        $header = new Header();
+        $header->build($document, $root, $this->MSGID, $this->transactionNumber, $this->debtorName, $this->controlPrice);
+        //Build transfertInformation
+        $this->paymentInformationTraitment($document, $header);
+        //Treat each transaction
+        foreach ($this->payments as $payment)
+        {
+            $transaction =  new Transaction();
+            $transaction->insertTransaction($document, $payment, $this->currentPayment);
         }
-        $groupHeaderTag->appendChild($initiatingParty);
-        $builder->root->appendChild($groupHeaderTag);
-        $builder->root->appendChild($groupHeaderTag);
 
-        //Transaction traitment
-        $this->currentPayment = $builder->doc->createElement('PmtInf');
-        $this->currentPayment->appendChild($builder->doc->createElement('PmtInfId', $this->ref));
-        $this->currentPayment->appendChild($builder->doc->createElement('PmtMtd', "TRF"));
+        $root->appendChild($this->currentPayment);
+    }
+
+    protected function paymentInformationTraitment($document, $header)
+    {
+        $this->currentPayment   = $document->createElement('PmtInf');
+        $this->currentPayment->appendChild($document->createElement('PmtInfId', $this->ref));
+        $this->currentPayment->appendChild($document->createElement('PmtMtd', "TRF"));
         $this->currentPayment->appendChild(
-            $builder->doc->createElement('NbOfTxs', $this->transactionNumber++)
+            $document->createElement('NbOfTxs', $this->transactionNumber)
         );
         $this->currentPayment->appendChild(
-            $builder->doc->createElement('CtrlSum', $this->controlPrice)
+            $document->createElement('CtrlSum', $this->controlPrice)
         );
 
-        $paymentTypeInformation = $builder->doc->createElement('PmtTpInf');
-        $instructionPriority = $builder->doc->createElement('InstrPrty', "NORM");
+        $paymentTypeInformation = $document->createElement('PmtTpInf');
+        $instructionPriority    = $document->createElement('InstrPrty', "NORM");
         $paymentTypeInformation->appendChild($instructionPriority);
         $this->currentPayment->appendChild($paymentTypeInformation);
 
-        $this->currentPayment->appendChild($builder->doc->createElement('ReqdExctnDt', "TEST"));
-        $debtor = $builder->doc->createElement('Dbtr');
-        $debtor->appendChild($builder->doc->createElement('Nm', "Societe S"));
+        $this->currentPayment->appendChild($document->createElement('ReqdExctnDt', $header->getFormattedDate()));
+        $debtor                 = $document->createElement('Dbtr');
+        $debtor->appendChild($document->createElement('Nm', StringHelpers::sanitizeString($this->debtorName)));
         $this->currentPayment->appendChild($debtor);
 
-        $debtorAccount = $builder->doc->createElement('DbtrAcct');
-        $id = $builder->doc->createElement('Id');
-        $id->appendChild($builder->doc->createElement('IBAN', "AZERTYUIOP"));
+        $debtorAccount          = $document->createElement('DbtrAcct');
+        $id = $document->createElement('Id');
+        $id->appendChild($document->createElement('IBAN', $this->debtorIBAN));
         $debtorAccount->appendChild($id);
         $this->currentPayment->appendChild($debtorAccount);
+        $debtorAgent            = $document->createElement('DbtrAgt');
+        $finInstitution         = $document->createElement('FinInstnId');
+        $finInstitution->appendChild($document->createElement('BIC', $this->debtorBIC));
 
-        $debtorAgent = $builder->doc->createElement('DbtrAgt');
-        $financialInstitutionId = $builder->getFinancialInstitutionElement("BIC");
+        $financialInstitutionId = $finInstitution;
         $debtorAgent->appendChild($financialInstitutionId);
         $this->currentPayment->appendChild($debtorAgent);
 
-        $builder->root->appendChild($this->currentPayment);
-        foreach($this->payments as $payment)
-        {
-            /*
-            $paymentTypeInformation = $builder->doc->createElement('PmtTpInf');
-            $instructionPriority = $builder->doc->createElement('InstrPrty', "NORM");
-            $paymentTypeInformation->appendChild($instructionPriority);
-            $builder->root->appendChild($paymentTypeInformation);*/
-        }
+        $this->currentPayment->appendChild($document->createElement('ChrgBr', 'DEBT'));
 
-        //$builder->doc->createElement($this->currentPayment);
-
-
-        return $builder->asXml();
     }
 }

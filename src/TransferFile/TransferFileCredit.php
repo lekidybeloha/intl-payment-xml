@@ -1,10 +1,12 @@
 <?php
-
+/**
+ * Copyright (c) 19/11/2020 16:26 DIMBINIAINA Elkana Vinet
+ * XML international transaction
+ */
 
 namespace TransferFile;
 
-use DomBuilder\BaseBuilder;
-use Utils\StringHelpers;
+use DataStructure\PaymentInformation;
 use Utils\Validator as Validator;
 
 class TransferFileCredit
@@ -17,19 +19,13 @@ class TransferFileCredit
             $result = Validator::validatePain($painFormat);
             if(!$result)
                 throw new \Exception("This library support only pain.001.001.03!");
-
-            //Sanitize initiator
-            $initiator = StringHelpers::sanitizeString($initiator);
-
-            return new BaseBuilder($painFormat);
+            return new PaymentInformation($identification, $initiator);
 
         }catch (\Exception $ex)
         {
             printf($ex);
             die;
         }
-
-
-
     }
+
 }
