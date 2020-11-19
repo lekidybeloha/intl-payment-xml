@@ -12,13 +12,18 @@ echo $test->build();
 
 # Explication
 
-`TransferFileCredit::createCustomerTransfer(identificationMessage, Society Name, "pain.001.001.03")`
+```php
+TransferFileCredit::createCustomerTransfer(identificationMessage, Society Name, "pain.001.001.03")
+```
 
 This code will initiate the basic information for transaction
-`addPaymentInfo(payementReference, Society Name, IBAN, BIC)`<br>
-
+```php
+addPaymentInfo(payementReference, Society Name, IBAN, BIC)
+```
 This code  will create the debitor account
 
-`createTransaction(amount, IBAN, BIC, Beneficiary Society Name, Remittance information, Payment ID)`
+```php
+createTransaction(amount, IBAN, BIC, Beneficiary Society Name, Remittance information, Payment ID)
+```
 
 This code will create de credit bank transfert to the beneficiary
