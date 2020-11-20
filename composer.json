@@ -17,7 +17,7 @@
     "license": "MIT",
     "require": {
         "php" : ">=7.0",
-        "vsoft/intl-payment-xml": "dev-master"
+        "vsoft/intl-payment-xml": "dev-phpnonsepa"
     },
     "repositories": [
     {
