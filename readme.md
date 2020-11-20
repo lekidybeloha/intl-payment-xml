@@ -8,9 +8,9 @@
 
 This library uses [Composer](https://getcomposer.org/) to make things easy.
 
-Learn to use composer and run :
+Learn to use composer and add this to require section (in your composer.json) :
 
-```composer require ladina/php-non-sepa-xml```
+```"ladina/php-non-sepa-xml": "1.*@dev"```
 
 # Example
 
