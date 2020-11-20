@@ -11,6 +11,14 @@ use Utils\Validator as Validator;
 
 class TransferFileCredit
 {
+    /**
+     * This function initialize all Class for gebin the XML file generation
+     * For this time, its support only pain.001.001.03
+     * @param $identification
+     * @param $initiator
+     * @param string $painFormat
+     * @return PaymentInformation
+     */
     public static function createCustomerTransfer($identification, $initiator, $painFormat = "pain.001.001.03")
     {
         try

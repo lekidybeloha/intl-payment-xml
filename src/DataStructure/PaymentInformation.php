@@ -12,25 +12,72 @@ use Utils\StringHelpers;
 
 class PaymentInformation
 {
+    /**
+     * @var
+     */
     protected $MSGID;
+    /**
+     * @var
+     */
     protected $initiator;
+    /**
+     * @var
+     */
     protected $ref;
+    /**
+     * @var
+     */
     protected $debtorName;
+    /**
+     * @var
+     */
     protected $debtorIBAN;
+    /**
+     * @var
+     */
     protected $debtorBIC;
+    /**
+     * @var
+     */
     protected $dateTime;
+    /**
+     * @var int
+     */
     protected $transactionNumber    = 0;
+    /**
+     * @var
+     */
     protected $transactionRef;
+    /**
+     * @var int
+     */
     protected $controlPrice         = 0;
+    /**
+     * @var array
+     */
     protected $payments             = [];
+    /**
+     * @var
+     */
     protected $currentPayment;
 
+    /**
+     * PaymentInformation constructor.
+     * @param $MSGID
+     * @param $initiator
+     */
     public function __construct($MSGID, $initiator)
     {
         $this->MSGID        = $MSGID;
         $this->initiator    = $initiator;
     }
 
+    /**
+     * @param $ref
+     * @param $debtorName
+     * @param $debtorIBAN
+     * @param $debtorBIC
+     */
     public function addPaymentInfo($ref, $debtorName, $debtorIBAN, $debtorBIC)
     {
         $this->ref          = $ref;
@@ -40,6 +87,15 @@ class PaymentInformation
         $this->dateTime     = new \DateTime();
     }
 
+    /**
+     * This function is used to create a payment Transaction
+     * @param float $amount
+     * @param $creditorIBAN
+     * @param $creditorBIC
+     * @param $creditorName
+     * @param $reason
+     * @param $ref
+     */
     public function createTransaction(float $amount, $creditorIBAN, $creditorBIC, $creditorName, $reason, $ref)
     {
         $this->payments[] = [
@@ -54,6 +110,9 @@ class PaymentInformation
         $this->controlPrice += $amount;
     }
 
+    /**
+     * @return false|string
+     */
     public function build()
     {
         $builder                = new BaseBuilder("pain.001.001.03");
@@ -64,6 +123,11 @@ class PaymentInformation
         return $builder->asXml();
     }
 
+    /**
+     * This function create all the transaction inside the XML file
+     * @param $document
+     * @param $root
+     */
     protected function traitment($document, $root)
     {
         //Build header
@@ -81,6 +145,11 @@ class PaymentInformation
         $root->appendChild($this->currentPayment);
     }
 
+    /**
+     * This function generate the Debitor information
+     * @param $document
+     * @param $header
+     */
     protected function paymentInformationTraitment($document, $header)
     {
         $this->currentPayment   = $document->createElement('PmtInf');

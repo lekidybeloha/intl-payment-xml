@@ -13,6 +13,11 @@ class BaseBuilder
     public $root;
     protected $painFormat;
 
+    /**
+     * BaseBuilder constructor.
+     * @param $painFormat
+     * @param bool $withSchemaLocation
+     */
     public function __construct($painFormat, $withSchemaLocation = true)
     {
         $this->painFormat           = $painFormat;
@@ -23,6 +28,9 @@ class BaseBuilder
         $this->doc->appendChild($this->root);
     }
 
+    /**
+     * @return false|string
+     */
     public function asXml()
     {
         return $this->doc->saveXML();

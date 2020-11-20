@@ -9,6 +9,10 @@ namespace Utils;
 
 class Validator
 {
+    /**
+     * @param $painFormat
+     * @return bool
+     */
     public static function validatePain($painFormat)
     {
         if($painFormat != 'pain.001.001.03')

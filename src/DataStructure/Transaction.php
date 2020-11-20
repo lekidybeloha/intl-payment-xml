@@ -11,6 +11,12 @@ use Utils\StringHelpers;
 
 class Transaction
 {
+    /**
+     * This function build the XML for the payment transaction
+     * @param $document
+     * @param $payment
+     * @param $current
+     */
     public function insertTransaction($document, $payment, $current)
     {
         //CrtTrfInf

@@ -12,14 +12,28 @@ use Utils\StringHelpers;
 
 class Header
 {
-
+    /**
+     * @var \DateTime
+     */
     protected $creationDate;
 
+    /**
+     * Header constructor.
+     */
     public function __construct()
     {
         $this->creationDate = new \DateTime();
     }
 
+    /**
+     * This will construct the XML header
+     * @param $document
+     * @param $root
+     * @param $MSGID
+     * @param $transactionNumber
+     * @param $debtorname
+     * @param $price
+     */
     public function build($document, $root, $MSGID, $transactionNumber, $debtorname, $price)
     {
         $groupHeaderTag         = $document->createElement('GrpHdr');

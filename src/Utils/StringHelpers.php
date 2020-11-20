@@ -9,6 +9,10 @@ namespace Utils;
 
 class StringHelpers
 {
+    /**
+     * @param $string
+     * @return string
+     */
     public static function sanitizeString($string)
     {
         $map = array(
