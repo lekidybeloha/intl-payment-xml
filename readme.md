@@ -10,7 +10,7 @@ This library uses [Composer](https://getcomposer.org/) to make things easy.
 
 Learn to use composer and run :
 
-```composer require vsoft/intl-payment-xml```
+```composer require ladina/php-non-sepa-xml```
 
 # Example
 
