@@ -11,7 +11,7 @@ This library uses [Composer](https://getcomposer.org/) to make things easy.
 Learn to use composer and add this to require section (in your composer.json) :
 
 ```php
-"ladina/php-non-sepa-xml": "1.*@dev"
+"vsoft/intl-payment-xml": "1.*@dev"
 ```
 
 # Example
