@@ -14,6 +14,10 @@
 	class PaymentInformation
 	{
 		/**
+		 * @var string
+		 */
+		protected $painFormat = "pain.001.001.03";
+		/**
 		 * @var
 		 */
 		protected $MSGID;
@@ -72,7 +76,7 @@
 		 * @param $MSGID
 		 * @param $initiator
 		 */
-		public function __construct ( $MSGID, $initiator,$timezone )
+		public function __construct ( $MSGID, $initiator, $timezone )
 		{
 			$this->MSGID = $MSGID;
 			$this->initiator = $initiator;
@@ -87,12 +91,12 @@
 		 */
 		public function addPaymentInfo ( $ref, $debtorName, $debtorIBAN, $debtorBIC )
 		{
-			TimeZone::setTimeZone($this->timezone);
+			TimeZone::setTimeZone( $this->timezone );
 			$this->ref = $ref;
 			$this->debtorName = $debtorName;
 			$this->debtorIBAN = $debtorIBAN;
 			$this->debtorBIC = $debtorBIC;
-			$this->dateTime = new \DateTime($this->timezone);
+			$this->dateTime = new \DateTime( $this->timezone );
 		}
 
 		/**
@@ -123,7 +127,7 @@
 		 */
 		public function build ()
 		{
-			$builder = new BaseBuilder( "pain.001.001.03" );
+			$builder = new BaseBuilder( $this->painFormat );
 			$entete = $builder->doc->createElement( 'CstmrCdtTrfInitn' );
 			$this->traitment( $builder->doc, $entete );
 			$builder->root->appendChild( $entete );

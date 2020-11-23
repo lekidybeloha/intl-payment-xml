@@ -27,15 +27,14 @@
 				$result = Validator::validatePain( $painFormat );
 				if ( !$result )
 				{
-					throw new \Exception( "This library support only pain.001.001.03!" );
+					throw new \Exception( "This library support only pain.001.001.03 !" );
 				}
 				return new PaymentInformation( $identification, $initiator, $timezone );
 
 			}
 			catch ( \Exception $ex )
 			{
-				printf( $ex );
-				die;
+				die( $ex->getMessage() );
 			}
 		}
 
