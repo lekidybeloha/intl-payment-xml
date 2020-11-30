@@ -6,7 +6,30 @@
 	require './vendor/autoload.php';
 
 	use TransferFile\TransferFileCredit;
-	$test = TransferFileCredit::createCustomerTransfer("MSG", "My society", "pain.001.001.03","Europe/Paris");
-	$test->addPaymentInfo("ref-paiement-x", "My society", "FRXXXXXXXXXXXXXXXXXXX", "YYYYYYYYY");
-	$test->createTransaction(200, 'USXXXXXXXXXXXXXXXXXXX', 'PPBPBP', ' USA Factory', 'Facture y', 'payement-x');
-	echo $test->build();
+
+	$test = TransferFileCredit::createCustomerTransfer(
+		"MSG",
+		"My society",
+		"pain.001.001.03",
+		"Europe/Paris"
+	);
+
+	$test->addPaymentInfo(
+		"ref-paiement-x",[
+			'debtorName' => "My society",
+			'debtorIBAN' => "FRXXXXXXXXXXXXXXXXXXX",
+			'debtorBIC' => "YYYYYYYYY"
+		]
+	);
+
+	$test->createTransaction('payement-x',[
+			'amount' => 602,
+			'creditorIBAN' => 'FR7630003632145698745632145',
+			'creditorAccountNumber' => 'creditorAccountNumber',
+			'creditorBIC' => 'creditorBIC',
+			'creditorName' => 'creditorName',
+			'reason' => 'reason'
+		]
+	);
+
+	echo $test->build(true);

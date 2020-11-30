@@ -31,9 +31,12 @@
 		/**
 		 * @return false|string
 		 */
-		public function asXml ()
+		public function asXml ($is_xml_header=false)
 		{
-			$this->setContentTypeHeaderAsXMLText();
+			if ($is_xml_header)
+			{
+				$this->setContentTypeHeaderAsXMLText();
+			}
 			return $this->doc->saveXML();
 		}
 

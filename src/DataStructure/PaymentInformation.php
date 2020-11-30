@@ -6,8 +6,8 @@
 
 	namespace DataStructure;
 
-
 	use DomBuilder\BaseBuilder;
+	use Library\Exception\InvalidArgumentException;
 	use Utils\StringHelpers;
 	use Utils\TimeZone;
 
@@ -70,7 +70,6 @@
 		 */
 		protected $currentPayment;
 
-
 		/**
 		 * PaymentInformation constructor.
 		 * @param $MSGID
@@ -89,8 +88,27 @@
 		 * @param $debtorIBAN
 		 * @param $debtorBIC
 		 */
-		public function addPaymentInfo ( $ref, $debtorName, $debtorIBAN, $debtorBIC )
+		public function addPaymentInfo ( $ref, $debtorInfo = [] )
 		{
+			if ( empty( $debtorInfo ) )
+			{
+				throw new InvalidArgumentException( 'debtorInfo info required' );
+			}
+
+			$required = [ 'debtorName', 'debtorIBAN', 'debtorBIC' ];
+
+			foreach ( $required as $field )
+			{
+				if ( !isset( $debtorInfo[ $field ] ) || !$debtorInfo[ $field ] )
+				{
+					throw new InvalidArgumentException( "$field is required and can not be empty" );
+				}
+			}
+
+			$debtorName = $debtorInfo[ 'debtorName' ];
+			$debtorIBAN = $debtorInfo[ 'debtorIBAN' ];
+			$debtorBIC = $debtorInfo[ 'debtorBIC' ];
+
 			TimeZone::setTimeZone( $this->timezone );
 			$this->ref = $ref;
 			$this->debtorName = $debtorName;
@@ -108,11 +126,50 @@
 		 * @param $reason
 		 * @param $ref
 		 */
-		public function createTransaction ( float $amount, $creditorIBAN, $creditorBIC, $creditorName, $reason, $ref )
+		public function createTransaction ( $ref, $payment = [] )
 		{
+
+			if ( empty( $payment ) )
+			{
+				throw new InvalidArgumentException( 'Payment info required' );
+			}
+
+			$required = [ 'amount', 'creditorBIC', 'creditorName', 'reason' ];
+
+			foreach ( $required as $field )
+			{
+				if ( !isset( $payment[ $field ] ) || !$payment[ $field ] )
+				{
+					throw new InvalidArgumentException( "$field is required and can not be empty" );
+				}
+			}
+
+			$amount = (float) $payment[ 'amount' ];
+			$creditorBIC = $payment[ 'creditorBIC' ];
+			$creditorName =  $payment[ 'creditorName' ];
+			$reason = $payment[ 'reason' ];
+			$creditorIBAN = '';
+			$creditorAccountNumber = '';
+
+			if (isset($payment['creditorIBAN']) && $payment['creditorIBAN'] != '')
+			{
+				$creditorIBAN = $payment[ 'creditorIBAN' ];
+			}
+			elseif (isset($payment['creditorAccountNumber']) && $payment['creditorAccountNumber'] != '')
+			{
+				$creditorAccountNumber = $payment[ 'creditorAccountNumber' ];
+			}
+			else
+			{
+				throw new InvalidArgumentException(
+					"You must provid at least one of this creditorIBAN or creditorAccountNumber "
+				);
+			}
+
 			$this->payments[] = [
 				'amount' => $amount,
 				'iban' => $creditorIBAN,
+				'accountNumber' => $creditorAccountNumber,
 				'bic' => $creditorBIC,
 				'name' => $creditorName,
 				'reason' => $reason,
@@ -125,14 +182,14 @@
 		/**
 		 * @return false|string
 		 */
-		public function build ()
+		public function build ($is_xml_header=false)
 		{
 			$builder = new BaseBuilder( $this->painFormat );
 			$entete = $builder->doc->createElement( 'CstmrCdtTrfInitn' );
 			$this->traitment( $builder->doc, $entete );
 			$builder->root->appendChild( $entete );
 
-			return $builder->asXml();
+			return $builder->asXml($is_xml_header);
 		}
 
 		/**

@@ -24,7 +24,7 @@
     "repositories": [
     {
         "type": "vcs",
-        "url": "https://github.com/ladinasedera/php-non-sepa-xml"
+        "url": "https://github.com/lekidybeloha/intl-payment-xml.git"
     }
     ],
     "autoload": {
@@ -32,7 +32,8 @@
             "TransferFile\\": "src/TransferFile/",
             "DataStructure\\": "src/DataStructure/",
             "DomBuilder\\": "src/DomBuilder/",
-            "Utils\\": "src/Utils/"
+            "Utils\\": "src/Utils/",
+            "Library\\Exception\\": "src/Exception/"
         }
     }
 }
