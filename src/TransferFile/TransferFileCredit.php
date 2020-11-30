@@ -7,6 +7,7 @@
 	namespace TransferFile;
 
 	use DataStructure\PaymentInformation;
+	use Library\Exception\InvalidArgumentException;
 	use Utils\Validator as Validator;
 
 	class TransferFileCredit
@@ -27,7 +28,7 @@
 				$result = Validator::validatePain( $painFormat );
 				if ( !$result )
 				{
-					throw new \Exception( "This library support only pain.001.001.03 !" );
+					throw new InvalidArgumentException( "This library support only pain.001.001.03 !" );
 				}
 				return new PaymentInformation( $identification, $initiator, $timezone );
 

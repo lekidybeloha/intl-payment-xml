@@ -1,8 +1,5 @@
 <?php
-
-
 	namespace Utils;
-
 
 	class TimeZone
 	{
@@ -22,4 +19,5 @@
 		{
 			return timezone_identifiers_list();
 		}
+
 	}

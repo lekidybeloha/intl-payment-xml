@@ -6,7 +6,6 @@
 
 	namespace DataStructure;
 
-
 	use Utils\StringHelpers;
 
 	class Header
@@ -16,12 +15,15 @@
 		 */
 		protected $creationDate;
 
+		protected $timezone = '';
+
 		/**
 		 * Header constructor.
 		 */
-		public function __construct ()
+		public function __construct ($europe='Europe/Paris')
 		{
-			$this->creationDate = new \DateTime();
+			$this->timezone = $europe;
+			$this->creationDate = new \DateTime($this->timezone);
 		}
 
 		/**
