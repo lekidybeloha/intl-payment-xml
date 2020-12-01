@@ -10,43 +10,41 @@ This library uses [Composer](https://getcomposer.org/) to make things easy.
 
 Learn to use composer and add this to require section (in your composer.json) :
 
-```php
+```
 "vsoft/intl-payment-xml":"1.*@dev"
 ```
 
 # Example
 
 ```php 
-require './vendor/autoload.php';
+<?php
+use TransferFile\TransferFileCredit;
 
-	use TransferFile\TransferFileCredit;
+$test = TransferFileCredit::createCustomerTransfer(
+	"uniqueID",
+	"My society",
+	"pain.001.001.03",
+	"Europe/Paris"
+);
 
-	$test = TransferFileCredit::createCustomerTransfer(
-		"MSG",
-		"My society",
-		"pain.001.001.03",
-		"Europe/Paris"
-	);
+$test->addPaymentInfo("ref-paiement-x",[
+    "debtorName" => "My society",
+    "debtorIBAN" => "FI1350001540000056",
+    "debtorBIC" => "PSSTFRPPMON"
+]
+);
 
-	$test->addPaymentInfo(
-		"ref-paiement-x",[
-			'debtorName' => "My society",
-			'debtorIBAN' => "FRXXXXXXXXXXXXXXXXXXX",
-			'debtorBIC' => "YYYYYYYYY"
-		]
-	);
+$test->createTransaction('payement-x',[
+    "amount" => 500,
+    "creditorIBAN" => "FI1350001540000056",
+    "creditorAccountNumber" => "12345789012",
+    "creditorBIC" => "OKOYFIHH",
+    "creditorName" => "creditorName",
+    "reason" => "reason phrase"
+]);
 
-	$test->createTransaction('payement-x',[
-			'amount' => 602,
-			'creditorIBAN' => 'FR7630003632145698745632145',
-			'creditorAccountNumber' => 'creditorAccountNumber',
-			'creditorBIC' => 'creditorBIC',
-			'creditorName' => 'creditorName',
-			'reason' => 'reason'
-		]
-	);
+echo $test->build(true);
 
-	echo $test->build(true);
 ```
 
 # Explication
@@ -55,34 +53,32 @@ This code will initiate the basic information for transaction
 
 ```php
 $test = TransferFileCredit::createCustomerTransfer(
-	"MSG",
-	"My society",
-	"pain.001.001.03",
-	"Europe/Paris"
+    "uniqueID",
+    "My society",
+    "pain.001.001.03",
+    "Europe/Paris"
 );
 ```
 This code  will create the debitor account
 
 ```php
-$test->addPaymentInfo(
-	"payment-reference",[
-		'debtorName' => "My society",
-		'debtorIBAN' => "FRXXXXXXXXXXXXXXXXXXX",
-		'debtorBIC' => "YYYYYYYYY"
-	]
+$test->addPaymentInfo("ref-paiement-x",[
+    "debtorName" => "My society",
+    "debtorIBAN" => "FI1350001540000056",
+    "debtorBIC" => "PSSTFRPPMON"
+]
 );
 ```
 
 This code will create de credit bank transfert to the beneficiary
 
 ```php
-$test->createTransaction('payement-reference',[
-	'amount' => 602,
-	'creditorIBAN' => 'FR7630003632145698745632145',
-	'creditorAccountNumber' => 'creditorAccountNumber',
-	'creditorBIC' => 'creditorBIC',
-	'creditorName' => 'creditorName',
-	'reason' => 'reason'
-]
-);
+$test->createTransaction('payement-x',[
+    "amount" => 500,
+    "creditorIBAN" => "FI1350001540000056",
+    "creditorAccountNumber" => "12345789012",
+    "creditorBIC" => "OKOYFIHH",
+    "creditorName" => "creditorName",
+    "reason" => "reason phrase"
+]);
 ```
