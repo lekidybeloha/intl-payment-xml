@@ -8,7 +8,7 @@
 	use TransferFile\TransferFileCredit;
 
 	$test = TransferFileCredit::createCustomerTransfer(
-		"MSG",
+		"uniqueID",
 		"My society",
 		"pain.001.001.03",
 		"Europe/Paris"
@@ -17,18 +17,18 @@
 	$test->addPaymentInfo(
 		"ref-paiement-x",[
 			'debtorName' => "My society",
-			'debtorIBAN' => "FRXXXXXXXXXXXXXXXXXXX",
-			'debtorBIC' => "YYYYYYYYY"
+			'debtorIBAN' => "FI1350001540000056",
+			'debtorBIC' => "PSSTFRPPMON"
 		]
 	);
 
 	$test->createTransaction('payement-x',[
-			'amount' => 602,
-			'creditorIBAN' => 'FR7630003632145698745632145',
-			'creditorAccountNumber' => 'creditorAccountNumber',
-			'creditorBIC' => 'creditorBIC',
+			'amount' => 500,
+			'creditorIBAN' => 'FI1350001540000056',
+			'creditorAccountNumber' => '12345789012',
+			'creditorBIC' => 'OKOYFIHH',
 			'creditorName' => 'creditorName',
-			'reason' => 'reason'
+			'reason' => 'reason phrase'
 		]
 	);
 
